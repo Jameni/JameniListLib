@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/jameni_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fe9025"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <com.jameni.jamenilistlib.view.MyRecycleview
+            android:id="@+id/jameni_refresh_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#F0F0F0" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <ImageView
+        android:id="@+id/imgHasNoData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:maxHeight="200dp"
+        android:maxWidth="200dp"
+        android:scaleType="centerInside"
+        android:visibility="gone" />
+
+</RelativeLayout>

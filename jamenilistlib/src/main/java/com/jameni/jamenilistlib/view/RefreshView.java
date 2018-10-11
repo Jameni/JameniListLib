@@ -139,7 +139,6 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
     //刷新完成，
     public void refreshComplete() {
         setRefreshing(false);
-        disableLoadMoreIfNotFullPage();
     }
 
 

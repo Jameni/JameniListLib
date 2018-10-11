@@ -112,11 +112,9 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
     private List<TestModel> getData() {
         List<TestModel> list = new ArrayList<>();
 
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 16; i++) {
             list.add(new TestModel((datalist.size() + i) + ""));
         }
-
-
         return list;
 
     }

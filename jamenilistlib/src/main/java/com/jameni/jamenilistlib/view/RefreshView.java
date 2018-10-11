@@ -265,6 +265,7 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
         }
 
         setEmptyViewVisiable(isShowEmptyView);
+        disableLoadMoreIfNotFullPage();//第一次加载数据时，数据没有超过屏幕高度就不自动加载更多
     }
 
 
@@ -606,7 +607,7 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
         if (adapter != null) {
             adapter.disableLoadMoreIfNotFullPage(getRecycleview());
         } else {
-            Log.i("RefreshView:", "Please set loadMoreComplete after setAdapter methond");
+            Log.i("RefreshView:", "Please set disableLoadMoreIfNotFullPage after setAdapter methond");
         }
     }
 

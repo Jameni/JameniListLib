@@ -5,6 +5,8 @@ https://github.com/Jameni/JameniListLib
 
 
 
+public viod initList(){
+
         datalist = new ArrayList<>();
         lvMain.setListBackgroundWhite();
         lvMain.setLinearManager();
@@ -14,6 +16,8 @@ https://github.com/Jameni/JameniListLib
         lvMain.setItemClickListener(this);
         lvMain.setOnRefreshListener(this);
         lvMain.setOnLoadMoreListener(this);
+}
+
 
 
 

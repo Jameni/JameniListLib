@@ -5,7 +5,7 @@ https://github.com/Jameni/JameniListLib
 
 
 
-public viod initList(){
+初始化
 
         datalist = new ArrayList<>();
         lvMain.setListBackgroundWhite();
@@ -16,10 +16,11 @@ public viod initList(){
         lvMain.setItemClickListener(this);
         lvMain.setOnRefreshListener(this);
         lvMain.setOnLoadMoreListener(this);
-}
 
 
 
+
+刷新列表
 
         lvMain.refreshComplete();//停止刷新
         lvMain.loadMoreComplete();//加载更多

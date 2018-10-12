@@ -1,11 +1,10 @@
 # refreshLib
 项目中常用的刷新框架，基于别人的框架再次封装的
-github地址
+# github地址
 https://github.com/Jameni/JameniListLib
 
 
-**************初始化list**************
-    public void initList() {
+
         datalist = new ArrayList<>();
         lvMain.setListBackgroundWhite();
         lvMain.setLinearManager();
@@ -16,11 +15,8 @@ https://github.com/Jameni/JameniListLib
         lvMain.setOnRefreshListener(this);
         lvMain.setOnLoadMoreListener(this);
 
-    }
 
 
-
-=============获取到数据后开始刷新===================
         lvMain.refreshComplete();//停止刷新
         lvMain.loadMoreComplete();//加载更多
         lvMain.update(datalist);//刷新列表数据

@@ -15,8 +15,7 @@
         <com.jameni.jamenilistlib.view.MyRecycleview
             android:id="@+id/jameni_refresh_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#F0F0F0" />
+            android:layout_height="match_parent" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

@@ -74,7 +74,6 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
 
         //设置默认刷新圈圈颜色
         setLoadingViewColor(Color.rgb(42, 170, 235));
-
         addView(contentView);
     }
 
@@ -90,8 +89,16 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
 
     //设置流线布局管理器
     public void setLinearManager() {
-        setLayoutManager(new LinearLayoutManager(mContext));
+        setLinearManager(true);
     }
+
+    //设置流线布局管理器
+    public void setLinearManager(boolean isVertical) {
+        LinearLayoutManager manager = new LinearLayoutManager(mContext);
+        manager.setOrientation(isVertical ? LinearLayoutManager.VERTICAL : LinearLayoutManager.HORIZONTAL);
+        setLayoutManager(manager);
+    }
+
 
     //设置格子布局管理器
     public void setGridManager(int column) {
@@ -587,8 +594,6 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
             myRecycleview.setDivider_Vertical();
         }
     }
-
-
 
 
     public void loadMoreComplete() {

@@ -35,14 +35,15 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
         lvMain = findViewById(R.id.lvMain);
         lvMain.setListBackgroundWhite();
         lvMain.setLinearManager();
+//        lvMain.setLinearManager(false);
         myadapter = new Myadapter();
         lvMain.setAdapter(myadapter);
 
         lvMain.setDivider();
 
-        lvMain.setItemClickListener(this);
-        lvMain.setOnRefreshListener(this);
-        lvMain.setOnLoadMoreListener(this);
+//        lvMain.setItemClickListener(this);
+//        lvMain.setOnRefreshListener(this);
+//        lvMain.setOnLoadMoreListener(this);
 
         onRefresh();
     }
@@ -112,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
     private List<TestModel> getData() {
         List<TestModel> list = new ArrayList<>();
 
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 6; i++) {
             list.add(new TestModel((datalist.size() + i) + ""));
         }
         return list;

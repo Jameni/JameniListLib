@@ -2,7 +2,6 @@ package com.jameni.jamenilistlib.view;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -52,12 +51,12 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
         initView(context);
     }
 
-    public RefreshView(Context context, @Nullable AttributeSet attrs) {
+    public RefreshView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView(context);
     }
 
-    public RefreshView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public RefreshView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView(context);
     }

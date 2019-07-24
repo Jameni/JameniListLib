@@ -77,15 +77,6 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
     }
 
 
-    public MyRecycleview getRecycleview() {
-        return myRecycleview;
-    }
-
-
-    public SwipeRefreshLayout getRefreshLayout() {
-        return refreshLayout;
-    }
-
     //设置流线布局管理器
     public void setLinearManager() {
         setLinearManager(true);
@@ -629,4 +620,44 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
     }
 
 
+    public ImageView getImgHasNoData() {
+        return imgHasNoData;
+    }
+
+    public void setNoDataImageOnClickListener(OnClickListener clickListener) {
+        if (imgHasNoData != null) {
+            imgHasNoData.setOnClickListener(clickListener);
+        }
+    }
+
+
+    public MyRecycleview getRecycleview() {
+        return myRecycleview;
+    }
+
+
+    public SwipeRefreshLayout getRefreshLayout() {
+        return refreshLayout;
+    }
+
+    public MyRecycleview getMyRecycleview() {
+        return getRecycleview();
+    }
+
+    public OnRefreshListener getOnRefreshListener() {
+        return onRefreshListener;
+    }
+
+
+    public OnLoadMoreListener getOnLoadMoreListener() {
+        return onLoadMoreListener;
+    }
+
+    public ItemChildViewClickListener getItemChildViewClickListener() {
+        return itemChildViewClickListener;
+    }
+
+    public ItemClickListener getItemClickListener() {
+        return itemClickListener;
+    }
 }

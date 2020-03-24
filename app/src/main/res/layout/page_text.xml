@@ -7,6 +7,6 @@
     <com.jameni.jamenilistlib.view.RefreshView
         android:id="@+id/lvMain"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></com.jameni.jamenilistlib.view.RefreshView>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

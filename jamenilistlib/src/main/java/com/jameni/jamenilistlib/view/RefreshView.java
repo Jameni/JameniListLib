@@ -2,10 +2,6 @@ package com.jameni.jamenilistlib.view;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +11,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.GridSpanSizeLookup;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.chad.library.adapter.base.listener.OnItemLongClickListener;
 import com.jameni.jamenilistlib.R;
 import com.jameni.jamenilistlib.adapter.BrvahAdapter;
 import com.jameni.jamenilistlib.adapter.MultiBrvahAdapter;
@@ -33,9 +39,9 @@ import java.util.List;
  * 封装 刷新列表
  */
 
-public class RefreshView extends RelativeLayout implements BaseQuickAdapter.RequestLoadMoreListener, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.OnItemLongClickListener, BaseQuickAdapter.OnItemClickListener, BaseQuickAdapter.OnItemChildClickListener {
-    private Context mContext;
+public class RefreshView extends RelativeLayout implements SwipeRefreshLayout.OnRefreshListener {
 
+    private Context mContext;
     private ImageView imgHasNoData;
     private MyRecycleview myRecycleview;
     private SwipeRefreshLayout refreshLayout;
@@ -107,15 +113,17 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
 
         if (getRecycleview() != null && getAdapter() != null && getAdapter() instanceof BaseQuickAdapter) {
 
-            ((BaseQuickAdapter) getAdapter()).setSpanSizeLookup(new BaseQuickAdapter.SpanSizeLookup() {
+            ((BaseQuickAdapter) getAdapter()).setGridSpanSizeLookup(new GridSpanSizeLookup() {
                 @Override
-                public int getSpanSize(GridLayoutManager gridLayoutManager, int position) {
-                    int szie = 0;
+                public int getSpanSize(GridLayoutManager gridLayoutManager, int viewType, int position) {
+
+                    int size = 0;
                     if (((BaseQuickAdapter) getAdapter()).getItem(position) instanceof ItemSpanModel) {
                         ItemSpanModel model = (ItemSpanModel) ((BaseQuickAdapter) getAdapter()).getItem(position);
-                        szie = model.getItemSpan();
+                        size = model.getItemSpan();
                     }
-                    return szie;
+
+                    return size;
                 }
             });
 
@@ -155,11 +163,20 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
         if (getRecycleview() != null) {
 
             if (getAdapter() != null) {
-
                 if (getAdapter() instanceof BaseQuickAdapter) {
-                    if (onLoadMoreListener != null) {
-                        ((BaseQuickAdapter) getAdapter()).setOnLoadMoreListener(this, getRecycleview());
-                    }
+                    BaseQuickAdapter adapter = (BaseQuickAdapter) getAdapter();
+                    adapter.getLoadMoreModule().setAutoLoadMore(true);
+                    disableLoadMoreIfNotFullPage();
+                    adapter.getLoadMoreModule().setOnLoadMoreListener(
+                            new com.chad.library.adapter.base.listener.OnLoadMoreListener() {
+                                @Override
+                                public void onLoadMore() {
+                                    if (RefreshView.this.onLoadMoreListener != null) {
+                                        RefreshView.this.onLoadMoreListener.onLoadMore();
+                                    }
+                                }
+                            }
+                    );
                 }
             } else {
                 //请在设置了adapter 之后设置 加载更多监听方法，谢谢，这是我自己写的英文，屌屌的
@@ -169,23 +186,6 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
     }
 
 
-    //    item项里的view点击事件监听
-    public void setItemChildViewClickListener(ItemChildViewClickListener itemChildViewClickListener) {
-        this.itemChildViewClickListener = itemChildViewClickListener;
-
-        if (getRecycleview() != null) {
-
-            if (getAdapter() != null) {
-
-                if (getAdapter() instanceof BaseQuickAdapter) {
-                    ((BaseQuickAdapter) getAdapter()).setOnItemChildClickListener(this);
-                }
-            } else {
-                Log.i("RefreshView:", "Please set setItemChildViewClickListener after setAdapter methond");
-            }
-        }
-    }
-
     //加载更多监听--去掉加载更多，或者加载完成的底部
     public void setOnLoadMoreEnable(boolean enable) {
 
@@ -194,7 +194,7 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
             if (getAdapter() != null) {
 
                 if (getAdapter() instanceof BaseQuickAdapter) {
-                    ((BaseQuickAdapter) getAdapter()).setEnableLoadMore(enable);
+                    ((BaseQuickAdapter) getAdapter()).getLoadMoreModule().setEnableLoadMore(enable);
                 }
             } else {
                 //请在设置了adapter 之后设置 加载更多监听方法，谢谢，这是我自己写的英文，屌屌的
@@ -212,7 +212,7 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
             if (getAdapter() != null) {
 
                 if (getAdapter() instanceof BaseQuickAdapter) {
-                    ((BaseQuickAdapter) getAdapter()).loadMoreEnd();
+                    ((BaseQuickAdapter) getAdapter()).getLoadMoreModule().loadMoreEnd();
                 }
             } else {
                 //请在设置了adapter 之后设置 加载更多监听方法，谢谢，这是我自己写的英文，屌屌的
@@ -227,7 +227,16 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
         if (getRecycleview() != null) {
             if (getAdapter() != null) {
                 if (getAdapter() instanceof BaseQuickAdapter) {
-                    ((BaseQuickAdapter) getAdapter()).setOnItemClickListener(this);
+                    BaseQuickAdapter adapter = (BaseQuickAdapter) getAdapter();
+                    adapter.setOnItemClickListener(new OnItemClickListener() {
+                        @Override
+                        public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                            if (RefreshView.this.itemClickListener != null) {
+                                RefreshView.this.itemClickListener.onItemClick(adapter.getItem(position), position);
+                            }
+
+                        }
+                    });
                 }
             } else {
                 Log.i("RefreshView:", "Please set setItemClickListener after setAdapter methond");
@@ -235,13 +244,49 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
         }
     }
 
+    //    item项里的view点击事件监听
+    public void setItemChildViewClickListener(final ItemChildViewClickListener itemChildViewClickListener) {
+        this.itemChildViewClickListener = itemChildViewClickListener;
+
+        if (getRecycleview() != null) {
+
+            if (getAdapter() != null) {
+
+                if (getAdapter() instanceof BaseQuickAdapter) {
+                    BaseQuickAdapter adapter = (BaseQuickAdapter) getAdapter();
+                    adapter.setOnItemChildClickListener(new OnItemChildClickListener() {
+                        @Override
+                        public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                            if (RefreshView.this.itemChildViewClickListener != null) {
+                                RefreshView.this.itemChildViewClickListener.onItemChildViewClick(view.getId(), position);
+                            }
+
+                        }
+                    });
+                }
+            } else {
+                Log.i("RefreshView:", "Please set setItemChildViewClickListener after setAdapter methond");
+            }
+        }
+    }
+
+
     //item长按点击
     public void setItemLongClickListener(ItemLongClickListener itemClickListener) {
         this.itemLongClickListener = itemClickListener;
         if (getRecycleview() != null) {
             if (getAdapter() != null) {
                 if (getAdapter() instanceof BaseQuickAdapter) {
-                    ((BaseQuickAdapter) getAdapter()).setOnItemLongClickListener(this);
+                    BaseQuickAdapter adapter = (BaseQuickAdapter) getAdapter();
+                    adapter.setOnItemLongClickListener(new OnItemLongClickListener() {
+                        @Override
+                        public boolean onItemLongClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                            if (RefreshView.this.itemLongClickListener != null) {
+                                RefreshView.this.itemLongClickListener.onItemLongClick(adapter.getItem(position), position);
+                            }
+                            return true;
+                        }
+                    });
                 }
             } else {
                 Log.i("RefreshView:", "Please set setItemClickListener after setAdapter methond");
@@ -304,15 +349,6 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
     }
 
 
-    //加载更多监听
-    @Override
-    public void onLoadMoreRequested() {
-        if (onLoadMoreListener != null) {
-            onLoadMoreListener.onLoadMore();
-        }
-    }
-
-
     //设置加载进度圈圈颜色
     public void setLoadingViewColor(int rgbColor) {
         if (refreshLayout != null) {
@@ -328,29 +364,6 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
         }
     }
 
-    @Override
-    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-        if (itemChildViewClickListener != null) {
-            itemChildViewClickListener.onItemChildViewClick(view.getId(), position);
-        }
-
-    }
-
-    @Override
-    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-        if (itemClickListener != null) {
-            itemClickListener.onItemClick(adapter.getItem(position), position);
-        }
-    }
-
-    @Override
-    public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
-        if (itemLongClickListener != null) {
-            itemLongClickListener.onItemLongClick(adapter.getItem(position), position);
-        }
-
-        return false;
-    }
 
     public SwipeRefreshLayout.LayoutParams getRecycleviewLayoutParmas() {
 
@@ -589,7 +602,7 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
     public void loadMoreComplete() {
         BaseQuickAdapter adapter = (BaseQuickAdapter) getAdapter();
         if (adapter != null) {
-            adapter.loadMoreComplete();
+            adapter.getLoadMoreModule().loadMoreComplete();
         } else {
             Log.i("RefreshView:", "Please set loadMoreComplete after setAdapter methond");
         }
@@ -598,8 +611,8 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
     //第一次加载会默认调用加载更多，这个方法可以屏蔽
     public void disableLoadMoreIfNotFullPage() {
         BaseQuickAdapter adapter = (BaseQuickAdapter) getAdapter();
-        if (adapter != null) {
-            adapter.disableLoadMoreIfNotFullPage(getRecycleview());
+        if (adapter != null && adapter.getLoadMoreModule() != null) {
+            adapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
         } else {
             Log.i("RefreshView:", "Please set disableLoadMoreIfNotFullPage after setAdapter methond");
         }
@@ -660,4 +673,6 @@ public class RefreshView extends RelativeLayout implements BaseQuickAdapter.Requ
     public ItemClickListener getItemClickListener() {
         return itemClickListener;
     }
+
+
 }

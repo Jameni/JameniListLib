@@ -1,13 +1,14 @@
 package com.jameni.jamenilist;
 
-import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.jameni.jamenilistlib.i.ItemChildViewClickListener;
 import com.jameni.jamenilistlib.i.ItemClickListener;
 import com.jameni.jamenilistlib.i.OnLoadMoreListener;
 import com.jameni.jamenilistlib.i.OnRefreshListener;
@@ -16,7 +17,7 @@ import com.jameni.jamenilistlib.view.RefreshView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements ItemClickListener, OnRefreshListener, OnLoadMoreListener {
+public class MainActivity extends AppCompatActivity implements ItemClickListener, OnRefreshListener, OnLoadMoreListener, ItemChildViewClickListener {
 
 
     RefreshView lvMain;
@@ -35,15 +36,14 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
         lvMain = findViewById(R.id.lvMain);
         lvMain.setListBackgroundWhite();
         lvMain.setLinearManager();
-//        lvMain.setLinearManager(false);
         myadapter = new Myadapter();
         lvMain.setAdapter(myadapter);
-
         lvMain.setDivider();
 
 //        lvMain.setItemClickListener(this);
-//        lvMain.setOnRefreshListener(this);
-//        lvMain.setOnLoadMoreListener(this);
+        lvMain.setItemChildViewClickListener(this);
+        lvMain.setOnRefreshListener(this);
+        lvMain.setOnLoadMoreListener(this);
 
         onRefresh();
     }
@@ -57,16 +57,17 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
     public void onLoadMore() {
 
         index++;
-
+        print("=========onLoadMore=========");
         print("加载次数==" + index);
         if (index < 4) {
             uiHandler.sendEmptyMessageDelayed(2, 500);
         }
-
     }
 
     @Override
     public void onRefresh() {
+
+        print("=========onRefresh=========");
         index = 0;
         uiHandler.sendEmptyMessageDelayed(1, 500);
 
@@ -118,5 +119,17 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
         }
         return list;
 
+    }
+
+    @Override
+    public void onItemChildViewClick(int viewId, int position) {
+        switch (viewId) {
+            case R.id.tv:
+                tip("tv==" + position);
+                break;
+            case R.id.tv2:
+                tip("tv2==" + position);
+                break;
+        }
     }
 }

@@ -2,8 +2,8 @@ package com.jameni.jamenilistlib.adapter;
 
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +18,14 @@ public abstract class MultiBrvahAdapter<T extends MultiItemEntity> extends BaseM
     }
 
     public void update(List data) {
-        this.mData = data == null ? new ArrayList<T>() : data;
-        notifyDataSetChanged();
+        //        setNewData(data == null ? new ArrayList<T>() : data);
+//        notifyDataSetChanged();
+        replaceData(data == null ? new ArrayList<T>() : data);
     }
 
-    public void setListData(List data) {
-        this.mData = data == null ? new ArrayList<T>() : data;
-    }
+//    public void setListData(List data) {
+//        this.mData = data == null ? new ArrayList<T>() : data;
+//    }
 
     public boolean isNotNull(Object obj) {
         return obj != null;
